@@ -17,6 +17,6 @@ WORKDIR ${APP_HOME}
 
 # SHELL ["/bin/bash", "-lc"]
 
-# EXPOSE 3000/tcp
+# EXPOSE 80/tcp
 
-# CMD ["python"]
+CMD ["make", "run"]
