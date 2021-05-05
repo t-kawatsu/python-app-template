@@ -1,7 +1,7 @@
 # https://python-poetry.org/docs/pyproject/
 
 [tool.poetry]
-name = "app"
+name = "python_app_template"
 version = "0.1.0"
 description = ""
 authors = ["Tatsuru Kawatsu <t-kawatsu@jogoj.com>"]
@@ -16,7 +16,7 @@ pytest = "^6.2.3"
 pytest-cov = "^2.11.1"
 
 [tool.poetry.scripts]
-run = "app.__main__:main"
+run = "python_app_template.__main__:main"
 
 [tool.pytest.ini_options]
 minversion = "6.0"
