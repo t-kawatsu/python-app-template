@@ -46,6 +46,19 @@ Development
   $ make run
 
 
+Deployment
+----------
+
+Build Docker image for production
+.. code-block:: bash
+
+  # Build
+  $ docker build -f docker/Dockerfile.prod -t [YOUR APP NAME]/app --no-cache .
+
+  # Run
+  $ docker run --rm -it [YOUR APP NAME]/app
+
+
 Troubleshooting
 ---------------
 
@@ -53,3 +66,6 @@ Troubleshooting
 Lisence
 -------
 
+LISENCE_.
+
+.. _LISENCE: LISENCE
