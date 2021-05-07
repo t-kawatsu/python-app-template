@@ -1,0 +1,64 @@
+name: Deploy to AWS
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-20.04
+    environment: production
+    timeout-minutes: 30 # consider something went wrong if over
+    strategy:
+      fail-fast: true
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Get the version
+      id: get_version
+      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+
+    - name: Get the docker image name
+      id: get_docker_image_name
+      run: echo ::set-output name=NAME::${GITHUB_REPOSITORY/t-kawatsu\//}
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ap-northeast-1
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build, tag, and push image to Amazon ECR
+      id: build-image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: ${{ steps.get_docker_image_name.outputs.name }}
+        # @FIXME
+        # IMAGE_TAG: ${{ steps.get_version.outputs.version }}
+        IMAGE_TAG: latest
+      run: |
+        docker build -f docker/Dockerfile.prod -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG --no-cache .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+#    - name: Fill in the new image ID in the Amazon ECS task definition
+#      id: task-def
+#      uses: aws-actions/amazon-ecs-render-task-definition@v1
+#      with:
+#        task-definition: task-definition.json
+#        container-name: sample-app
+#        image: ${{ steps.build-image.outputs.image }}
+
+#    - name: Deploy Amazon ECS task definition
+#      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+#      with:
+#        task-definition: ${{ steps.task-def.outputs.task-definition }}
+#        service: sample-app-service
+#        cluster: default
+#        wait-for-service-stability: true

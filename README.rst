@@ -11,6 +11,7 @@ Stack
 - Docker
 - Poetry
 - Make
+- Github Actions ( CI / CD tool )
 
 
 Requirements
@@ -26,6 +27,9 @@ Development
 
   # Build docker image
   $ docker build -t [YOUR APP NAME]-dev/app docker/
+
+  # Set up
+  $ docker run --rm -it -v `pwd`:/usr/src/app ai-recipe-dev make setup
 
   # Run docker image
   $ docker run --rm -it -v `pwd`:/usr/src/app [YOUR APP NAME]-dev/app [cmd]
