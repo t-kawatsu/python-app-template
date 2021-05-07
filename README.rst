@@ -2,6 +2,8 @@
 python-app-template
 ===================
 
+.. image:: https://github.com/t-kawatsu/ai-recipe/actions/workflows/test.yml/badge.svg
+
 This is the template repository for python applications that are constructed with Docker.
 
 
